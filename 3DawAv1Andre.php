@@ -1,10 +1,16 @@
 <?php
-// Ler arquivo Produtos.txt
-$produtos = array_map('str_getcsv', file('Produtos.txt'));
-array_walk($produtos, function(&$a) use ($produtos) {
-  $a = array_combine($produtos[0], $a);
-});
-array_shift($produtos); // Tira cabeçalho
+// Ler Produtos.txt
+$arquivo = fopen('Produtos.txt', 'r');
+$cabecalho = fgetcsv($arquivo, 0, ';');
+$produtos = [];
+while ($linha = fgetcsv($arquivo, 0, ';')) {
+  $produto = [];
+  foreach ($cabecalho as $i => $campo) {
+    $produto[$campo] = $linha[$i];
+  }
+  $produtos[] = $produto;
+}
+fclose($arquivo);
 
 // Inicializa carrinho
 if (!isset($_SESSION['carrinho'])) {
@@ -24,7 +30,7 @@ if (isset($_POST['adicionar'])) {
   }
 }
 
-// Tira do carrinho
+// Exclui produto
 if (isset($_POST['excluir'])) {
   $idProduto = $_POST['id'];
   foreach ($_SESSION['carrinho'] as $chave => $produto) {
@@ -35,7 +41,7 @@ if (isset($_POST['excluir'])) {
   }
 }
 
-// Lista produto
+// Listagem
 echo "<table>";
 echo "<tr><th>Id</th><th>Nome</th><th>Valor</th><th>Quantidade</th><th></th></tr>";
 foreach ($produtos as $produto) {
