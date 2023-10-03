@@ -6,7 +6,7 @@ array_walk($produtos, function(&$a) use ($produtos) {
 });
 array_shift($produtos); // Tira cabeçalho
 
-// Inicializa o carrinho de compras
+// Inicializa carrinho
 if (!isset($_SESSION['carrinho'])) {
   $_SESSION['carrinho'] = [];
 }
